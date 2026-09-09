@@ -464,35 +464,56 @@ html, body { height: 100%; overflow: hidden; }
   box-shadow: 0 4px 10px rgba(0, 0, 0, .5); z-index: 13;
 }
 
-/* ============================================================ 品目の検分 */
+/* ============================================================ ダイアログ共通 */
 .backdrop {
-  position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 20px;
-  background: rgba(10, 4, 5, .78); backdrop-filter: blur(3px);
+  position: fixed; inset: 0; z-index: 60; display: grid; place-items: center;
+  padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom));
+  background: rgba(10, 4, 6, .78); backdrop-filter: blur(3px);
 }
-.sheet {
-  width: min(440px, 100%); max-height: 88dvh; overflow: auto; padding: 20px 22px 22px;
-  text-align: center;
+.dlg { width: min(560px, 100%); max-height: calc(100dvh - 24px); display: flex; }
+.dlg.dlg-wide { width: min(820px, 100%); }
+.dlg > .win { display: flex; flex-direction: column; width: 100%; min-height: 0; }
+.dlg-body { display: flex; flex-direction: column; min-height: 0; padding: 18px 18px 14px; }
+.dlg-scroll { overflow: auto; min-height: 0; padding-right: 4px; overscroll-behavior: contain; }
+.dlg-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding-top: 12px; margin-top: 12px; border-top: 1px solid rgba(217, 181, 68, .25);
 }
-.sheet .x {
-  position: absolute; right: 10px; top: 8px; width: 30px; height: 30px; cursor: pointer;
-  color: var(--gold-d); background: transparent; border: 1px solid var(--gold-d);
-  border-radius: 50%; font-size: 13px; line-height: 1;
+.dlg-foot .btn { width: auto; padding: .55em 1.3em; font-size: .92rem; }
+.dlg-x {
+  position: absolute; right: 10px; top: -13px; z-index: 3; width: 30px; height: 30px; cursor: pointer;
+  border-radius: 50%; border: 2px solid var(--gold); background: #0a0f2c; color: var(--gold-l);
+  font-size: 13px; line-height: 1; box-shadow: 0 3px 10px rgba(0, 0, 0, .6);
 }
-.sheet .x:hover { background: var(--crimson); color: #fff; border-color: var(--crimson); }
-.sheet-head { font-size: .8rem; letter-spacing: .16em; }
-.sheet-head .who { font-weight: 800; }
-.sheet-img {
-  width: 100%; max-width: 260px; aspect-ratio: 1; object-fit: contain; margin: 12px auto 4px;
-  display: block; background: #fffaf0; border: 1px solid var(--gold-d); border-radius: 6px;
+.dlg-x:hover { background: var(--crimson); border-color: #f0d98a; color: #fff; }
+
+/* ---- 検分 ---- */
+.item-grid { display: grid; grid-template-columns: 200px 1fr; gap: 18px; align-items: start; }
+.item-visual { position: relative; }
+.item-img {
+  width: 100%; aspect-ratio: 1; max-height: 34dvh; object-fit: contain; display: block;
+  background: #fffaf0; border: 2px solid var(--gold-d); border-radius: 8px;
 }
-.sheet-name { margin: 10px 0 2px; font-size: 1.2rem; font-weight: 900; color: var(--ink); letter-spacing: .04em; }
-.sheet-price { font-size: 1.9rem; font-weight: 900; color: var(--crimson); font-family: var(--sans); }
-.sheet-price small { font-size: .5em; }
-.sheet .spec { display: grid; grid-template-columns: 5.6em 1fr; gap: 6px 10px; text-align: left; margin: 4px 0 12px; }
-.sheet .spec dt { font-size: .72rem; letter-spacing: .1em; color: #8a6a1c; }
-.sheet .spec dd { margin: 0; font-size: .78rem; line-height: 1.6; color: #4a3220; word-break: break-word; }
-.sheet-speech { margin: 4px 0 14px; font-size: .92rem; font-style: italic; color: #5a3a20; }
-.sheet .btn { color: var(--parch); }
+.item-by { position: absolute; right: -10px; bottom: -14px; }
+.item-by .portrait, .item-by .emoji { height: 64px; width: auto; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .6)); }
+.item-by .emoji { width: 64px; font-size: 30px; }
+.item-info { min-width: 0; }
+.item-name { margin: 0 0 4px; font-size: clamp(1.05rem, 2.4vw, 1.3rem); font-weight: 900; line-height: 1.4; letter-spacing: .04em; color: #fff7e2; overflow-wrap: anywhere; }
+.item-price { font-size: clamp(1.5rem, 3.4vw, 2rem); font-weight: 900; color: var(--gold-l); font-family: var(--sans); line-height: 1.2; }
+.item-price small { font-size: .5em; }
+.item-speech { margin: 8px 0 10px; font-size: .92rem; line-height: 1.7; color: #e6d8b8; font-style: italic; }
+.item-spec { display: grid; grid-template-columns: 6em 1fr; gap: 6px 10px; margin: 0; }
+.item-spec dt { font-size: .72rem; letter-spacing: .12em; color: #9fb0e6; padding-top: 2px; }
+.item-spec dd { margin: 0; font-size: .82rem; line-height: 1.6; color: #cdd6ff; overflow-wrap: anywhere; }
+
+@media (max-width: 640px) {
+  .item-grid { grid-template-columns: 1fr; }
+  .item-img { max-height: 28dvh; width: auto; margin: 0 auto; }
+  .item-by { right: 0; }
+  .item-spec { grid-template-columns: 1fr; gap: 2px 0; }
+  .dlg-foot { flex-direction: column-reverse; align-items: stretch; }
+  .dlg-foot .btn { width: 100%; }
+}
 
 .offer { cursor: pointer; }
 .offer[role="button"] { pointer-events: auto; touch-action: manipulation; }
@@ -1056,10 +1077,10 @@ html, body { height: 100%; overflow: hidden; }
 .chronology tr.last th, .chronology tr.last td { font-weight: 900; color: #5a0f0f; font-size: 1.08em; padding-top: 8px; border-bottom: 0; }
 
 /* ============================================================ 共有ダイアログ */
-.share-dialog { width: min(760px, 100%); max-height: 90dvh; overflow: auto; }
+
 .share-grid { display: grid; grid-template-columns: 220px 1fr; gap: 18px; align-items: start; }
 @media (max-width: 640px) { .share-grid { grid-template-columns: 1fr; } }
-.share-preview { aspect-ratio: 1080 / 1350; background: rgba(0, 0, 0, .3); border: 1px solid rgba(217, 181, 68, .4); border-radius: 6px; overflow: hidden; display: grid; place-items: center; }
+.share-preview { aspect-ratio: 1080 / 1350; max-height: 52dvh; background: rgba(0, 0, 0, .3); border: 1px solid rgba(217, 181, 68, .4); border-radius: 6px; overflow: hidden; display: grid; place-items: center; }
 .share-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .share-preview-wait { font-size: .76rem; letter-spacing: .16em; color: #9fb0e6; animation: blink 1.2s steps(1) infinite; }
 .share-actions { display: grid; gap: 8px; }
@@ -1072,6 +1093,4 @@ html, body { height: 100%; overflow: hidden; }
 .share-btn b { font-size: 1rem; letter-spacing: .1em; }
 .share-btn span { font-size: .74rem; color: #b9c4ee; }
 .share-text { margin: 6px 0 0; padding: 10px 12px; font-family: var(--serif); font-size: .78rem; line-height: 1.7; white-space: pre-wrap; color: #cdd6ff; background: rgba(6, 10, 30, .7); border-radius: 6px; border: 1px solid #2b3c86; }
-.share-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 4px; }
 .share-notice { font-size: .82rem; letter-spacing: .12em; color: var(--gold-l); }
-.share-foot .btn { width: auto; padding: .5em 1.2em; }

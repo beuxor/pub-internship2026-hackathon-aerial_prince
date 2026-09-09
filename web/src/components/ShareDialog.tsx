@@ -47,11 +47,14 @@ export default function ShareDialog({ data, open, onClose }: { data: Shared; ope
     <AnimatePresence>
       {open && (
         <motion.div className="backdrop" onClick={onClose} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-          <motion.div className="win share-dialog" onClick={(e) => e.stopPropagation()}
+          <motion.div className="dlg dlg-wide" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal
             initial={{ scale: .9, y: 20, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: .94, y: 10, opacity: 0 }}
             transition={{ type: "spring", stiffness: 220, damping: 22 }}>
+            <div className="win">
             <span className="win-speaker">き ょ う ゆ う</span>
-            <div className="win-body">
+            <button className="dlg-x" onClick={onClose} aria-label="閉じる">✕</button>
+            <div className="win-body dlg-body">
+              <div className="dlg-scroll">
               <div className="share-grid">
                 <div className="share-preview">
                   {preview
@@ -75,12 +78,14 @@ export default function ShareDialog({ data, open, onClose }: { data: Shared; ope
                     </button>
                   )}
                   <pre className="share-text">{text}</pre>
-                  <div className="share-foot">
-                    <span className="share-notice">{notice ?? ""}</span>
-                    <button className="btn ghost" onClick={onClose}>とじる</button>
-                  </div>
                 </div>
               </div>
+              </div>
+              <div className="dlg-foot">
+                <span className="share-notice">{notice ?? ""}</span>
+                <button className="btn ghost" onClick={onClose}>とじる</button>
+              </div>
+            </div>
             </div>
           </motion.div>
         </motion.div>
